@@ -5,7 +5,7 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="LearningPlatformModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="Answer">
+        <EntityType Name="Answers">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
@@ -89,8 +89,16 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="LessonId" Type="int" Nullable="false" />
           <Property Name="Title" Type="nvarchar" MaxLength="1024" Nullable="false" />
-          <Property Name="CurrectAnswerId" Type="int" Nullable="false" />
-          <Property Name="Type" Type="nvarchar" MaxLength="12" Nullable="false" />
+          <Property Name="CorrectAnswer" Type="int" />
+        </EntityType>
+        <EntityType Name="UserAnswers">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="QuestionId" />
+          </Key>
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="QuestionId" Type="int" Nullable="false" />
+          <Property Name="AnswerId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="UserCourses">
           <Key>
@@ -99,40 +107,24 @@
           </Key>
           <Property Name="CourseId" Type="int" Nullable="false" />
           <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
-          <Property Name="LastLesson" Type="int" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'LearningPlatform.dbo.UserProgress' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="UserProgress">
           <Key>
             <PropertyRef Name="UserId" />
             <PropertyRef Name="CourseId" />
-            <PropertyRef Name="LessonId" />
           </Key>
           <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="LessonId" Type="int" />
           <Property Name="CourseId" Type="int" Nullable="false" />
-          <Property Name="LessonId" Type="int" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'LearningPlatform.dbo.UserQuestions' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
-        <EntityType Name="UserQuestions">
-          <Key>
-            <PropertyRef Name="UserId" />
-            <PropertyRef Name="QuestionId" />
-            <PropertyRef Name="AnswerId" />
-          </Key>
-          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
-          <Property Name="QuestionId" Type="int" Nullable="false" />
-          <Property Name="AnswerId" Type="int" Nullable="false" />
-        </EntityType>
-        <Association Name="FK__Answer__Question__60A75C0F">
+        <Association Name="FK__Answers__Questio__73BA3083">
           <End Role="Questions" Type="Self.Questions" Multiplicity="1" />
-          <End Role="Answer" Type="Self.Answer" Multiplicity="*" />
+          <End Role="Answers" Type="Self.Answers" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Questions">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="Answer">
+            <Dependent Role="Answers">
               <PropertyRef Name="QuestionId" />
             </Dependent>
           </ReferentialConstraint>
@@ -149,19 +141,19 @@ warning 6002: The table/view 'LearningPlatform.dbo.UserQuestions' does not have 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Question__Currec__619B8048">
-          <End Role="Answer" Type="Self.Answer" Multiplicity="1" />
+        <Association Name="FK__Questions__Corre__74AE54BC">
+          <End Role="Answers" Type="Self.Answers" Multiplicity="0..1" />
           <End Role="Questions" Type="Self.Questions" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Answer">
+            <Principal Role="Answers">
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="Questions">
-              <PropertyRef Name="CurrectAnswerId" />
+              <PropertyRef Name="CorrectAnswer" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Question__Lesson__5DCAEF64">
+        <Association Name="FK__Questions__Lesso__6C190EBB">
           <End Role="Lessons" Type="Self.Lessons" Multiplicity="1" />
           <End Role="Questions" Type="Self.Questions" Multiplicity="*" />
           <ReferentialConstraint>
@@ -173,98 +165,98 @@ warning 6002: The table/view 'LearningPlatform.dbo.UserQuestions' does not have 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__UserCours__Cours__59063A47">
-          <End Role="Courses" Type="Self.Courses" Multiplicity="1" />
-          <End Role="UserCourses" Type="Self.UserCourses" Multiplicity="*" />
+        <Association Name="FK__UserAnswe__Answe__7B5B524B">
+          <End Role="Answers" Type="Self.Answers" Multiplicity="1" />
+          <End Role="UserAnswers" Type="Self.UserAnswers" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Courses">
+            <Principal Role="Answers">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="UserCourses">
-              <PropertyRef Name="CourseId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__UserCours__UserI__59FA5E80">
-          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
-          <End Role="UserCourses" Type="Self.UserCourses" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="UserCourses">
-              <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__UserProgr__Cours__68487DD7">
-          <End Role="Courses" Type="Self.Courses" Multiplicity="1" />
-          <End Role="UserProgress" Type="Self.UserProgress" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Courses">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="UserProgress">
-              <PropertyRef Name="CourseId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__UserProgr__Lesso__693CA210">
-          <End Role="Lessons" Type="Self.Lessons" Multiplicity="1" />
-          <End Role="UserProgress" Type="Self.UserProgress" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Lessons">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="UserProgress">
-              <PropertyRef Name="LessonId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__UserProgr__UserI__6754599E">
-          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
-          <End Role="UserProgress" Type="Self.UserProgress" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="UserProgress">
-              <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__UserQuest__Answe__656C112C">
-          <End Role="Answer" Type="Self.Answer" Multiplicity="1" />
-          <End Role="UserQuestions" Type="Self.UserQuestions" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Answer">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="UserQuestions">
+            <Dependent Role="UserAnswers">
               <PropertyRef Name="AnswerId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__UserQuest__Quest__6477ECF3">
+        <Association Name="FK__UserAnswe__Quest__7A672E12">
           <End Role="Questions" Type="Self.Questions" Multiplicity="1" />
-          <End Role="UserQuestions" Type="Self.UserQuestions" Multiplicity="*" />
+          <End Role="UserAnswers" Type="Self.UserAnswers" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Questions">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="UserQuestions">
+            <Dependent Role="UserAnswers">
               <PropertyRef Name="QuestionId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__UserQuest__UserI__6383C8BA">
+        <Association Name="FK__UserAnswe__UserI__797309D9">
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
-          <End Role="UserQuestions" Type="Self.UserQuestions" Multiplicity="*" />
+          <End Role="UserAnswers" Type="Self.UserAnswers" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="AspNetUsers">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="UserQuestions">
+            <Dependent Role="UserAnswers">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserCours__Cours__6EF57B66">
+          <End Role="Courses" Type="Self.Courses" Multiplicity="1" />
+          <End Role="UserCourses" Type="Self.UserCourses" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Courses">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserCourses">
+              <PropertyRef Name="CourseId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserCours__UserI__6FE99F9F">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="UserCourses" Type="Self.UserCourses" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserCourses">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserProgr__Cours__00200768">
+          <End Role="Courses" Type="Self.Courses" Multiplicity="1" />
+          <End Role="UserProgress" Type="Self.UserProgress" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Courses">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserProgress">
+              <PropertyRef Name="CourseId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserProgr__Lesso__7F2BE32F">
+          <End Role="Lessons" Type="Self.Lessons" Multiplicity="0..1" />
+          <End Role="UserProgress" Type="Self.UserProgress" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Lessons">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserProgress">
+              <PropertyRef Name="LessonId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserProgr__UserI__7E37BEF6">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="UserProgress" Type="Self.UserProgress" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserProgress">
               <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
@@ -326,7 +318,7 @@ warning 6002: The table/view 'LearningPlatform.dbo.UserQuestions' does not have 
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="LearningPlatformModelStoreContainer">
-          <EntitySet Name="Answer" EntityType="Self.Answer" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Answers" EntityType="Self.Answers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaims" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogins" Schema="dbo" store:Type="Tables" />
@@ -335,68 +327,56 @@ warning 6002: The table/view 'LearningPlatform.dbo.UserQuestions' does not have 
           <EntitySet Name="Courses" EntityType="Self.Courses" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Lessons" EntityType="Self.Lessons" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Questions" EntityType="Self.Questions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserAnswers" EntityType="Self.UserAnswers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserCourses" EntityType="Self.UserCourses" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="UserProgress" EntityType="Self.UserProgress" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [UserProgress].[UserId] AS [UserId], 
-    [UserProgress].[CourseId] AS [CourseId], 
-    [UserProgress].[LessonId] AS [LessonId]
-    FROM [dbo].[UserProgress] AS [UserProgress]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="UserQuestions" EntityType="Self.UserQuestions" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [UserQuestions].[UserId] AS [UserId], 
-    [UserQuestions].[QuestionId] AS [QuestionId], 
-    [UserQuestions].[AnswerId] AS [AnswerId]
-    FROM [dbo].[UserQuestions] AS [UserQuestions]</DefiningQuery>
-          </EntitySet>
-          <AssociationSet Name="FK__Answer__Question__60A75C0F" Association="Self.FK__Answer__Question__60A75C0F">
+          <EntitySet Name="UserProgress" EntityType="Self.UserProgress" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__Answers__Questio__73BA3083" Association="Self.FK__Answers__Questio__73BA3083">
             <End Role="Questions" EntitySet="Questions" />
-            <End Role="Answer" EntitySet="Answer" />
+            <End Role="Answers" EntitySet="Answers" />
           </AssociationSet>
           <AssociationSet Name="FK__Lessons__CourseI__5AEE82B9" Association="Self.FK__Lessons__CourseI__5AEE82B9">
             <End Role="Courses" EntitySet="Courses" />
             <End Role="Lessons" EntitySet="Lessons" />
           </AssociationSet>
-          <AssociationSet Name="FK__Question__Currec__619B8048" Association="Self.FK__Question__Currec__619B8048">
-            <End Role="Answer" EntitySet="Answer" />
+          <AssociationSet Name="FK__Questions__Corre__74AE54BC" Association="Self.FK__Questions__Corre__74AE54BC">
+            <End Role="Answers" EntitySet="Answers" />
             <End Role="Questions" EntitySet="Questions" />
           </AssociationSet>
-          <AssociationSet Name="FK__Question__Lesson__5DCAEF64" Association="Self.FK__Question__Lesson__5DCAEF64">
+          <AssociationSet Name="FK__Questions__Lesso__6C190EBB" Association="Self.FK__Questions__Lesso__6C190EBB">
             <End Role="Lessons" EntitySet="Lessons" />
             <End Role="Questions" EntitySet="Questions" />
           </AssociationSet>
-          <AssociationSet Name="FK__UserCours__Cours__59063A47" Association="Self.FK__UserCours__Cours__59063A47">
+          <AssociationSet Name="FK__UserAnswe__Answe__7B5B524B" Association="Self.FK__UserAnswe__Answe__7B5B524B">
+            <End Role="Answers" EntitySet="Answers" />
+            <End Role="UserAnswers" EntitySet="UserAnswers" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserAnswe__Quest__7A672E12" Association="Self.FK__UserAnswe__Quest__7A672E12">
+            <End Role="Questions" EntitySet="Questions" />
+            <End Role="UserAnswers" EntitySet="UserAnswers" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserAnswe__UserI__797309D9" Association="Self.FK__UserAnswe__UserI__797309D9">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="UserAnswers" EntitySet="UserAnswers" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserCours__Cours__6EF57B66" Association="Self.FK__UserCours__Cours__6EF57B66">
             <End Role="Courses" EntitySet="Courses" />
             <End Role="UserCourses" EntitySet="UserCourses" />
           </AssociationSet>
-          <AssociationSet Name="FK__UserCours__UserI__59FA5E80" Association="Self.FK__UserCours__UserI__59FA5E80">
+          <AssociationSet Name="FK__UserCours__UserI__6FE99F9F" Association="Self.FK__UserCours__UserI__6FE99F9F">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="UserCourses" EntitySet="UserCourses" />
           </AssociationSet>
-          <AssociationSet Name="FK__UserProgr__Cours__68487DD7" Association="Self.FK__UserProgr__Cours__68487DD7">
+          <AssociationSet Name="FK__UserProgr__Cours__00200768" Association="Self.FK__UserProgr__Cours__00200768">
             <End Role="Courses" EntitySet="Courses" />
             <End Role="UserProgress" EntitySet="UserProgress" />
           </AssociationSet>
-          <AssociationSet Name="FK__UserProgr__Lesso__693CA210" Association="Self.FK__UserProgr__Lesso__693CA210">
+          <AssociationSet Name="FK__UserProgr__Lesso__7F2BE32F" Association="Self.FK__UserProgr__Lesso__7F2BE32F">
             <End Role="Lessons" EntitySet="Lessons" />
             <End Role="UserProgress" EntitySet="UserProgress" />
           </AssociationSet>
-          <AssociationSet Name="FK__UserProgr__UserI__6754599E" Association="Self.FK__UserProgr__UserI__6754599E">
+          <AssociationSet Name="FK__UserProgr__UserI__7E37BEF6" Association="Self.FK__UserProgr__UserI__7E37BEF6">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="UserProgress" EntitySet="UserProgress" />
-          </AssociationSet>
-          <AssociationSet Name="FK__UserQuest__Answe__656C112C" Association="Self.FK__UserQuest__Answe__656C112C">
-            <End Role="Answer" EntitySet="Answer" />
-            <End Role="UserQuestions" EntitySet="UserQuestions" />
-          </AssociationSet>
-          <AssociationSet Name="FK__UserQuest__Quest__6477ECF3" Association="Self.FK__UserQuest__Quest__6477ECF3">
-            <End Role="Questions" EntitySet="Questions" />
-            <End Role="UserQuestions" EntitySet="UserQuestions" />
-          </AssociationSet>
-          <AssociationSet Name="FK__UserQuest__UserI__6383C8BA" Association="Self.FK__UserQuest__UserI__6383C8BA">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="UserQuestions" EntitySet="UserQuestions" />
           </AssociationSet>
           <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
@@ -426,7 +406,7 @@ warning 6002: The table/view 'LearningPlatform.dbo.UserQuestions' does not have 
           <EntitySet Name="AspNetUserLogins" EntityType="LearningPlatformModel.AspNetUserLogin" />
           <EntitySet Name="AspNetUsers" EntityType="LearningPlatformModel.AspNetUser" />
           <EntitySet Name="Courses" EntityType="LearningPlatformModel.Course" />
-          <EntitySet Name="UserCourses" EntityType="LearningPlatformModel.UserCours" />
+          <EntitySet Name="UserCourses1" EntityType="LearningPlatformModel.UserCourse" />
           <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="LearningPlatformModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
             <End Role="AspNetUser" EntitySet="AspNetUsers" />
             <End Role="AspNetUserClaim" EntitySet="AspNetUserClaims" />
@@ -437,7 +417,7 @@ warning 6002: The table/view 'LearningPlatform.dbo.UserQuestions' does not have 
           </AssociationSet>
           <AssociationSet Name="FK__UserCours__UserI__59FA5E80" Association="LearningPlatformModel.FK__UserCours__UserI__59FA5E80">
             <End Role="AspNetUser" EntitySet="AspNetUsers" />
-            <End Role="UserCours" EntitySet="UserCourses" />
+            <End Role="UserCours" EntitySet="UserCourses1" />
           </AssociationSet>
           <AssociationSet Name="FK__Lessons__CourseI__5AEE82B9" Association="LearningPlatformModel.FK__Lessons__CourseI__5AEE82B9">
             <End Role="Cours" EntitySet="Courses" />
@@ -445,7 +425,7 @@ warning 6002: The table/view 'LearningPlatform.dbo.UserQuestions' does not have 
           </AssociationSet>
           <AssociationSet Name="FK__UserCours__Cours__59063A47" Association="LearningPlatformModel.FK__UserCours__Cours__59063A47">
             <End Role="Cours" EntitySet="Courses" />
-            <End Role="UserCours" EntitySet="UserCourses" />
+            <End Role="UserCours" EntitySet="UserCourses1" />
           </AssociationSet>
           <AssociationSet Name="AspNetUserRoles" Association="LearningPlatformModel.AspNetUserRoles">
             <End Role="AspNetRole" EntitySet="AspNetRoles" />
@@ -453,43 +433,43 @@ warning 6002: The table/view 'LearningPlatform.dbo.UserQuestions' does not have 
           </AssociationSet>
           <EntitySet Name="Answers" EntityType="LearningPlatformModel.Answer" />
           <EntitySet Name="Questions" EntityType="LearningPlatformModel.Question" />
-          <EntitySet Name="UserProgresses" EntityType="LearningPlatformModel.UserProgress" />
           <EntitySet Name="UserAnswers" EntityType="LearningPlatformModel.UserAnswer" />
-          <AssociationSet Name="FK__Answer__Question__60A75C0F" Association="LearningPlatformModel.FK__Answer__Question__60A75C0F">
+          <EntitySet Name="UserProgresses" EntityType="LearningPlatformModel.UserProgress" />
+          <AssociationSet Name="FK__Answers__Questio__73BA3083" Association="LearningPlatformModel.FK__Answers__Questio__73BA3083">
             <End Role="Question" EntitySet="Questions" />
             <End Role="Answer" EntitySet="Answers" />
           </AssociationSet>
-          <AssociationSet Name="FK__Question__Currec__619B8048" Association="LearningPlatformModel.FK__Question__Currec__619B8048">
+          <AssociationSet Name="FK__Questions__Corre__74AE54BC" Association="LearningPlatformModel.FK__Questions__Corre__74AE54BC">
             <End Role="Answer" EntitySet="Answers" />
             <End Role="Question" EntitySet="Questions" />
           </AssociationSet>
-          <AssociationSet Name="FK__UserQuest__Answe__656C112C" Association="LearningPlatformModel.FK__UserQuest__Answe__656C112C">
+          <AssociationSet Name="FK__UserAnswe__Answe__7B5B524B" Association="LearningPlatformModel.FK__UserAnswe__Answe__7B5B524B">
             <End Role="Answer" EntitySet="Answers" />
-            <End Role="UserQuestion" EntitySet="UserAnswers" />
+            <End Role="UserAnswer" EntitySet="UserAnswers" />
           </AssociationSet>
-          <AssociationSet Name="FK__UserProgr__UserI__6754599E" Association="LearningPlatformModel.FK__UserProgr__UserI__6754599E">
+          <AssociationSet Name="FK__UserAnswe__UserI__797309D9" Association="LearningPlatformModel.FK__UserAnswe__UserI__797309D9">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="UserAnswer" EntitySet="UserAnswers" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserProgr__UserI__7E37BEF6" Association="LearningPlatformModel.FK__UserProgr__UserI__7E37BEF6">
             <End Role="AspNetUser" EntitySet="AspNetUsers" />
             <End Role="UserProgress" EntitySet="UserProgresses" />
           </AssociationSet>
-          <AssociationSet Name="FK__UserQuest__UserI__6383C8BA" Association="LearningPlatformModel.FK__UserQuest__UserI__6383C8BA">
-            <End Role="AspNetUser" EntitySet="AspNetUsers" />
-            <End Role="UserQuestion" EntitySet="UserAnswers" />
-          </AssociationSet>
-          <AssociationSet Name="FK__UserProgr__Cours__68487DD7" Association="LearningPlatformModel.FK__UserProgr__Cours__68487DD7">
+          <AssociationSet Name="FK__UserProgr__Cours__00200768" Association="LearningPlatformModel.FK__UserProgr__Cours__00200768">
             <End Role="Course" EntitySet="Courses" />
             <End Role="UserProgress" EntitySet="UserProgresses" />
           </AssociationSet>
-          <AssociationSet Name="FK__Question__Lesson__5DCAEF64" Association="LearningPlatformModel.FK__Question__Lesson__5DCAEF64">
+          <AssociationSet Name="FK__Questions__Lesso__6C190EBB" Association="LearningPlatformModel.FK__Questions__Lesso__6C190EBB">
             <End Role="Lesson" EntitySet="Lessons" />
             <End Role="Question" EntitySet="Questions" />
           </AssociationSet>
-          <AssociationSet Name="FK__UserProgr__Lesso__693CA210" Association="LearningPlatformModel.FK__UserProgr__Lesso__693CA210">
+          <AssociationSet Name="FK__UserProgr__Lesso__7F2BE32F" Association="LearningPlatformModel.FK__UserProgr__Lesso__7F2BE32F">
             <End Role="Lesson" EntitySet="Lessons" />
             <End Role="UserProgress" EntitySet="UserProgresses" />
           </AssociationSet>
-          <AssociationSet Name="FK__UserQuest__Quest__6477ECF3" Association="LearningPlatformModel.FK__UserQuest__Quest__6477ECF3">
+          <AssociationSet Name="FK__UserAnswe__Quest__7A672E12" Association="LearningPlatformModel.FK__UserAnswe__Quest__7A672E12">
             <End Role="Question" EntitySet="Questions" />
-            <End Role="UserQuestion" EntitySet="UserAnswers" />
+            <End Role="UserAnswer" EntitySet="UserAnswers" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="Lesson">
@@ -501,7 +481,8 @@ warning 6002: The table/view 'LearningPlatform.dbo.UserQuestions' does not have 
           <Property Name="Description" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="CourseId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Course" Relationship="LearningPlatformModel.FK__Lessons__CourseI__5AEE82B9" FromRole="Lesson" ToRole="Cours" />
-          <NavigationProperty Name="Questions" Relationship="LearningPlatformModel.FK__Question__Lesson__5DCAEF64" FromRole="Lesson" ToRole="Question" />
+          <NavigationProperty Name="Questions" Relationship="LearningPlatformModel.FK__Questions__Lesso__6C190EBB" FromRole="Lesson" ToRole="Question" />
+          <NavigationProperty Name="UserProgresses" Relationship="LearningPlatformModel.FK__UserProgr__Lesso__7F2BE32F" FromRole="Lesson" ToRole="UserProgress" />
         </EntityType>
         <EntityType Name="AspNetRole">
           <Key>
@@ -550,10 +531,10 @@ warning 6002: The table/view 'LearningPlatform.dbo.UserQuestions' does not have 
           <Property Name="UserName" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="AspNetUserClaims" Relationship="LearningPlatformModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="AspNetUser" ToRole="AspNetUserClaim" />
           <NavigationProperty Name="AspNetUserLogins" Relationship="LearningPlatformModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUser" ToRole="AspNetUserLogin" />
-          <NavigationProperty Name="Courses" Relationship="LearningPlatformModel.FK__UserCours__UserI__59FA5E80" FromRole="AspNetUser" ToRole="UserCours" />
+          <NavigationProperty Name="UserCourses" Relationship="LearningPlatformModel.FK__UserCours__UserI__59FA5E80" FromRole="AspNetUser" ToRole="UserCours" />
           <NavigationProperty Name="AspNetRoles" Relationship="LearningPlatformModel.AspNetUserRoles" FromRole="AspNetUser" ToRole="AspNetRole" />
-          <NavigationProperty Name="Progress" Relationship="LearningPlatformModel.FK__UserProgr__UserI__6754599E" FromRole="AspNetUser" ToRole="UserProgress" />
-          <NavigationProperty Name="Answers" Relationship="LearningPlatformModel.FK__UserQuest__UserI__6383C8BA" FromRole="AspNetUser" ToRole="UserQuestion" />
+          <NavigationProperty Name="UserAnswers" Relationship="LearningPlatformModel.FK__UserAnswe__UserI__797309D9" FromRole="AspNetUser" ToRole="UserAnswer" />
+          <NavigationProperty Name="UserProgresses" Relationship="LearningPlatformModel.FK__UserProgr__UserI__7E37BEF6" FromRole="AspNetUser" ToRole="UserProgress" />
         </EntityType>
         <EntityType Name="Course">
           <Key>
@@ -565,17 +546,17 @@ warning 6002: The table/view 'LearningPlatform.dbo.UserQuestions' does not have 
           <Property Name="Image" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Lessons" Relationship="LearningPlatformModel.FK__Lessons__CourseI__5AEE82B9" FromRole="Cours" ToRole="Lesson" />
           <NavigationProperty Name="UserCourses" Relationship="LearningPlatformModel.FK__UserCours__Cours__59063A47" FromRole="Cours" ToRole="UserCours" />
+          <NavigationProperty Name="UserProgresses" Relationship="LearningPlatformModel.FK__UserProgr__Cours__00200768" FromRole="Course" ToRole="UserProgress" />
         </EntityType>
-        <EntityType Name="UserCours">
+        <EntityType Name="UserCourse">
           <Key>
             <PropertyRef Name="CourseId" />
             <PropertyRef Name="UserId" />
           </Key>
           <Property Name="CourseId" Type="Int32" Nullable="false" />
           <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="LastLesson" Type="Int32" />
           <NavigationProperty Name="User" Relationship="LearningPlatformModel.FK__UserCours__UserI__59FA5E80" FromRole="UserCours" ToRole="AspNetUser" />
-          <NavigationProperty Name="Cours" Relationship="LearningPlatformModel.FK__UserCours__Cours__59063A47" FromRole="UserCours" ToRole="Cours" />
+          <NavigationProperty Name="Course" Relationship="LearningPlatformModel.FK__UserCours__Cours__59063A47" FromRole="UserCours" ToRole="Cours" />
         </EntityType>
         <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
           <End Type="LearningPlatformModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
@@ -607,7 +588,7 @@ warning 6002: The table/view 'LearningPlatform.dbo.UserQuestions' does not have 
         </Association>
         <Association Name="FK__UserCours__UserI__59FA5E80">
           <End Type="LearningPlatformModel.AspNetUser" Role="AspNetUser" Multiplicity="1" />
-          <End Type="LearningPlatformModel.UserCours" Role="UserCours" Multiplicity="*" />
+          <End Type="LearningPlatformModel.UserCourse" Role="UserCours" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="AspNetUser">
               <PropertyRef Name="Id" />
@@ -631,7 +612,7 @@ warning 6002: The table/view 'LearningPlatform.dbo.UserQuestions' does not have 
         </Association>
         <Association Name="FK__UserCours__Cours__59063A47">
           <End Type="LearningPlatformModel.Course" Role="Cours" Multiplicity="1" />
-          <End Type="LearningPlatformModel.UserCours" Role="UserCours" Multiplicity="*" />
+          <End Type="LearningPlatformModel.UserCourse" Role="UserCours" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Cours">
               <PropertyRef Name="Id" />
@@ -652,7 +633,7 @@ warning 6002: The table/view 'LearningPlatform.dbo.UserQuestions' does not have 
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="QuestionId" Type="Int32" Nullable="false" />
           <Property Name="Text" Type="String" Nullable="false" MaxLength="1024" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Question" Relationship="LearningPlatformModel.FK__Answer__Question__60A75C0F" FromRole="Answer" ToRole="Question" />
+          <NavigationProperty Name="Question" Relationship="LearningPlatformModel.FK__Answers__Questio__73BA3083" FromRole="Answer" ToRole="Question" />
         </EntityType>
         <EntityType Name="Question">
           <Key>
@@ -661,39 +642,37 @@ warning 6002: The table/view 'LearningPlatform.dbo.UserQuestions' does not have 
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="LessonId" Type="Int32" Nullable="false" />
           <Property Name="Title" Type="String" Nullable="false" MaxLength="1024" FixedLength="false" Unicode="true" />
-          <Property Name="CurrectAnswerId" Type="Int32" Nullable="false" />
-          <Property Name="Type" Type="String" Nullable="false" MaxLength="12" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Answers" Relationship="LearningPlatformModel.FK__Answer__Question__60A75C0F" FromRole="Question" ToRole="Answer" />
-          <NavigationProperty Name="CorrectAnswer" Relationship="LearningPlatformModel.FK__Question__Currec__619B8048" FromRole="Question" ToRole="Answer" />
-          <NavigationProperty Name="Lesson" Relationship="LearningPlatformModel.FK__Question__Lesson__5DCAEF64" FromRole="Question" ToRole="Lesson" />
-        </EntityType>
-        <EntityType Name="UserProgress">
-          <Key>
-            <PropertyRef Name="UserId" />
-            <PropertyRef Name="CourseId" />
-            <PropertyRef Name="LessonId" />
-          </Key>
-          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="CourseId" Type="Int32" Nullable="false" />
-          <Property Name="LessonId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="User" Relationship="LearningPlatformModel.FK__UserProgr__UserI__6754599E" FromRole="UserProgress" ToRole="AspNetUser" />
-          <NavigationProperty Name="Cours" Relationship="LearningPlatformModel.FK__UserProgr__Cours__68487DD7" FromRole="UserProgress" ToRole="Course" />
-          <NavigationProperty Name="Lesson" Relationship="LearningPlatformModel.FK__UserProgr__Lesso__693CA210" FromRole="UserProgress" ToRole="Lesson" />
+          <Property Name="CorrectAnswerId" Type="Int32" />
+          <NavigationProperty Name="Answers" Relationship="LearningPlatformModel.FK__Answers__Questio__73BA3083" FromRole="Question" ToRole="Answer" />
+          <NavigationProperty Name="CorrectAnswer" Relationship="LearningPlatformModel.FK__Questions__Corre__74AE54BC" FromRole="Question" ToRole="Answer" />
+          <NavigationProperty Name="Lesson" Relationship="LearningPlatformModel.FK__Questions__Lesso__6C190EBB" FromRole="Question" ToRole="Lesson" />
+          <NavigationProperty Name="UserAnswers" Relationship="LearningPlatformModel.FK__UserAnswe__Quest__7A672E12" FromRole="Question" ToRole="UserAnswer" />
         </EntityType>
         <EntityType Name="UserAnswer">
           <Key>
             <PropertyRef Name="UserId" />
             <PropertyRef Name="QuestionId" />
-            <PropertyRef Name="AnswerId" />
           </Key>
           <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="QuestionId" Type="Int32" Nullable="false" />
           <Property Name="AnswerId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Answer" Relationship="LearningPlatformModel.FK__UserQuest__Answe__656C112C" FromRole="UserQuestion" ToRole="Answer" />
-          <NavigationProperty Name="User" Relationship="LearningPlatformModel.FK__UserQuest__UserI__6383C8BA" FromRole="UserQuestion" ToRole="AspNetUser" />
-          <NavigationProperty Name="Question" Relationship="LearningPlatformModel.FK__UserQuest__Quest__6477ECF3" FromRole="UserQuestion" ToRole="Question" />
+          <NavigationProperty Name="Answer" Relationship="LearningPlatformModel.FK__UserAnswe__Answe__7B5B524B" FromRole="UserAnswer" ToRole="Answer" />
+          <NavigationProperty Name="User" Relationship="LearningPlatformModel.FK__UserAnswe__UserI__797309D9" FromRole="UserAnswer" ToRole="AspNetUser" />
+          <NavigationProperty Name="Question" Relationship="LearningPlatformModel.FK__UserAnswe__Quest__7A672E12" FromRole="UserAnswer" ToRole="Question" />
         </EntityType>
-        <Association Name="FK__Answer__Question__60A75C0F">
+        <EntityType Name="UserProgress">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="CourseId" />
+          </Key>
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="LessonId" Type="Int32" />
+          <Property Name="CourseId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="User" Relationship="LearningPlatformModel.FK__UserProgr__UserI__7E37BEF6" FromRole="UserProgress" ToRole="AspNetUser" />
+          <NavigationProperty Name="Course" Relationship="LearningPlatformModel.FK__UserProgr__Cours__00200768" FromRole="UserProgress" ToRole="Course" />
+          <NavigationProperty Name="Lesson" Relationship="LearningPlatformModel.FK__UserProgr__Lesso__7F2BE32F" FromRole="UserProgress" ToRole="Lesson" />
+        </EntityType>
+        <Association Name="FK__Answers__Questio__73BA3083">
           <End Type="LearningPlatformModel.Question" Role="Question" Multiplicity="1" />
           <End Type="LearningPlatformModel.Answer" Role="Answer" Multiplicity="*" />
           <ReferentialConstraint>
@@ -705,31 +684,43 @@ warning 6002: The table/view 'LearningPlatform.dbo.UserQuestions' does not have 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Question__Currec__619B8048">
-          <End Type="LearningPlatformModel.Answer" Role="Answer" Multiplicity="1" />
+        <Association Name="FK__Questions__Corre__74AE54BC">
+          <End Type="LearningPlatformModel.Answer" Role="Answer" Multiplicity="0..1" />
           <End Type="LearningPlatformModel.Question" Role="Question" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Answer">
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="Question">
-              <PropertyRef Name="CurrectAnswerId" />
+              <PropertyRef Name="CorrectAnswerId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__UserQuest__Answe__656C112C">
+        <Association Name="FK__UserAnswe__Answe__7B5B524B">
           <End Type="LearningPlatformModel.Answer" Role="Answer" Multiplicity="1" />
-          <End Type="LearningPlatformModel.UserAnswer" Role="UserQuestion" Multiplicity="*" />
+          <End Type="LearningPlatformModel.UserAnswer" Role="UserAnswer" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Answer">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="UserQuestion">
+            <Dependent Role="UserAnswer">
               <PropertyRef Name="AnswerId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__UserProgr__UserI__6754599E">
+        <Association Name="FK__UserAnswe__UserI__797309D9">
+          <End Type="LearningPlatformModel.AspNetUser" Role="AspNetUser" Multiplicity="1" />
+          <End Type="LearningPlatformModel.UserAnswer" Role="UserAnswer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserAnswer">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserProgr__UserI__7E37BEF6">
           <End Type="LearningPlatformModel.AspNetUser" Role="AspNetUser" Multiplicity="1" />
           <End Type="LearningPlatformModel.UserProgress" Role="UserProgress" Multiplicity="*" />
           <ReferentialConstraint>
@@ -741,19 +732,7 @@ warning 6002: The table/view 'LearningPlatform.dbo.UserQuestions' does not have 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__UserQuest__UserI__6383C8BA">
-          <End Type="LearningPlatformModel.AspNetUser" Role="AspNetUser" Multiplicity="1" />
-          <End Type="LearningPlatformModel.UserAnswer" Role="UserQuestion" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUser">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="UserQuestion">
-              <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__UserProgr__Cours__68487DD7">
+        <Association Name="FK__UserProgr__Cours__00200768">
           <End Type="LearningPlatformModel.Course" Role="Course" Multiplicity="1" />
           <End Type="LearningPlatformModel.UserProgress" Role="UserProgress" Multiplicity="*" />
           <ReferentialConstraint>
@@ -765,7 +744,7 @@ warning 6002: The table/view 'LearningPlatform.dbo.UserQuestions' does not have 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Question__Lesson__5DCAEF64">
+        <Association Name="FK__Questions__Lesso__6C190EBB">
           <End Type="LearningPlatformModel.Lesson" Role="Lesson" Multiplicity="1" />
           <End Type="LearningPlatformModel.Question" Role="Question" Multiplicity="*" />
           <ReferentialConstraint>
@@ -777,8 +756,8 @@ warning 6002: The table/view 'LearningPlatform.dbo.UserQuestions' does not have 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__UserProgr__Lesso__693CA210">
-          <End Type="LearningPlatformModel.Lesson" Role="Lesson" Multiplicity="1" />
+        <Association Name="FK__UserProgr__Lesso__7F2BE32F">
+          <End Type="LearningPlatformModel.Lesson" Role="Lesson" Multiplicity="0..1" />
           <End Type="LearningPlatformModel.UserProgress" Role="UserProgress" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Lesson">
@@ -789,14 +768,14 @@ warning 6002: The table/view 'LearningPlatform.dbo.UserQuestions' does not have 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__UserQuest__Quest__6477ECF3">
+        <Association Name="FK__UserAnswe__Quest__7A672E12">
           <End Type="LearningPlatformModel.Question" Role="Question" Multiplicity="1" />
-          <End Type="LearningPlatformModel.UserAnswer" Role="UserQuestion" Multiplicity="*" />
+          <End Type="LearningPlatformModel.UserAnswer" Role="UserAnswer" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Question">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="UserQuestion">
+            <Dependent Role="UserAnswer">
               <PropertyRef Name="QuestionId" />
             </Dependent>
           </ReferentialConstraint>
@@ -872,10 +851,9 @@ warning 6002: The table/view 'LearningPlatform.dbo.UserQuestions' does not have 
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="UserCourses">
-            <EntityTypeMapping TypeName="LearningPlatformModel.UserCours">
+          <EntitySetMapping Name="UserCourses1">
+            <EntityTypeMapping TypeName="LearningPlatformModel.UserCourse">
               <MappingFragment StoreEntitySet="UserCourses">
-                <ScalarProperty Name="LastLesson" ColumnName="LastLesson" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="CourseId" ColumnName="CourseId" />
               </MappingFragment>
@@ -891,7 +869,7 @@ warning 6002: The table/view 'LearningPlatform.dbo.UserQuestions' does not have 
           </AssociationSetMapping>
           <EntitySetMapping Name="Answers">
             <EntityTypeMapping TypeName="LearningPlatformModel.Answer">
-              <MappingFragment StoreEntitySet="Answer">
+              <MappingFragment StoreEntitySet="Answers">
                 <ScalarProperty Name="Text" ColumnName="Text" />
                 <ScalarProperty Name="QuestionId" ColumnName="QuestionId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
@@ -901,28 +879,27 @@ warning 6002: The table/view 'LearningPlatform.dbo.UserQuestions' does not have 
           <EntitySetMapping Name="Questions">
             <EntityTypeMapping TypeName="LearningPlatformModel.Question">
               <MappingFragment StoreEntitySet="Questions">
-                <ScalarProperty Name="Type" ColumnName="Type" />
-                <ScalarProperty Name="CurrectAnswerId" ColumnName="CurrectAnswerId" />
+                <ScalarProperty Name="CorrectAnswerId" ColumnName="CorrectAnswer" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="LessonId" ColumnName="LessonId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="UserProgresses">
-            <EntityTypeMapping TypeName="LearningPlatformModel.UserProgress">
-              <MappingFragment StoreEntitySet="UserProgress">
-                <ScalarProperty Name="LessonId" ColumnName="LessonId" />
-                <ScalarProperty Name="CourseId" ColumnName="CourseId" />
+          <EntitySetMapping Name="UserAnswers">
+            <EntityTypeMapping TypeName="LearningPlatformModel.UserAnswer">
+              <MappingFragment StoreEntitySet="UserAnswers">
+                <ScalarProperty Name="AnswerId" ColumnName="AnswerId" />
+                <ScalarProperty Name="QuestionId" ColumnName="QuestionId" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="UserAnswers">
-            <EntityTypeMapping TypeName="LearningPlatformModel.UserAnswer">
-              <MappingFragment StoreEntitySet="UserQuestions">
-                <ScalarProperty Name="AnswerId" ColumnName="AnswerId" />
-                <ScalarProperty Name="QuestionId" ColumnName="QuestionId" />
+          <EntitySetMapping Name="UserProgresses">
+            <EntityTypeMapping TypeName="LearningPlatformModel.UserProgress">
+              <MappingFragment StoreEntitySet="UserProgress">
+                <ScalarProperty Name="CourseId" ColumnName="CourseId" />
+                <ScalarProperty Name="LessonId" ColumnName="LessonId" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
               </MappingFragment>
             </EntityTypeMapping>

@@ -18,17 +18,19 @@ namespace Learning_Platform.Data
         public Question()
         {
             this.Answers = new HashSet<Answer>();
+            this.UserAnswers = new HashSet<UserAnswer>();
         }
     
         public int Id { get; set; }
         public int LessonId { get; set; }
         public string Title { get; set; }
-        public int CurrectAnswerId { get; set; }
-        public string Type { get; set; }
+        public Nullable<int> CorrectAnswerId { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Answer> Answers { get; set; }
         public virtual Answer CorrectAnswer { get; set; }
         public virtual Lesson Lesson { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserAnswer> UserAnswers { get; set; }
     }
 }

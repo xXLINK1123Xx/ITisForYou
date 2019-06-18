@@ -235,7 +235,7 @@
     <Compile Include="Data\UserAnswer.cs">
       <DependentUpon>DB.tt</DependentUpon>
     </Compile>
-    <Compile Include="Data\UserCours.cs">
+    <Compile Include="Data\UserCourse.cs">
       <DependentUpon>DB.tt</DependentUpon>
     </Compile>
     <Compile Include="Data\UserProgress.cs">

@@ -15,11 +15,11 @@ namespace Learning_Platform.Data
     public partial class UserProgress
     {
         public string UserId { get; set; }
+        public Nullable<int> LessonId { get; set; }
         public int CourseId { get; set; }
-        public int LessonId { get; set; }
     
         public virtual AspNetUser User { get; set; }
-        public virtual Course Cours { get; set; }
+        public virtual Course Course { get; set; }
         public virtual Lesson Lesson { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Data.Entity;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Learning_Platform.Data;
@@ -36,7 +37,9 @@ namespace Learning_Platform.Controllers
             {
                 return NotFound();
             }
-            return Ok(result);
+
+            var tasks = result.Questions.ToList();
+            return Ok(tasks);
         }
 
     }

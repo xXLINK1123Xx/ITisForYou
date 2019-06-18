@@ -19,10 +19,10 @@ namespace Learning_Platform.Data
         {
             this.AspNetUserClaims = new HashSet<AspNetUserClaim>();
             this.AspNetUserLogins = new HashSet<AspNetUserLogin>();
-            this.Courses = new HashSet<UserCours>();
+            this.UserCourses = new HashSet<UserCourse>();
             this.AspNetRoles = new HashSet<AspNetRole>();
-            this.Progress = new HashSet<UserProgress>();
-            this.Answers = new HashSet<UserAnswer>();
+            this.UserAnswers = new HashSet<UserAnswer>();
+            this.UserProgresses = new HashSet<UserProgress>();
         }
     
         public string Id { get; set; }
@@ -43,12 +43,12 @@ namespace Learning_Platform.Data
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AspNetUserLogin> AspNetUserLogins { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<UserCours> Courses { get; set; }
+        public virtual ICollection<UserCourse> UserCourses { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AspNetRole> AspNetRoles { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<UserProgress> Progress { get; set; }
+        public virtual ICollection<UserAnswer> UserAnswers { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<UserAnswer> Answers { get; set; }
+        public virtual ICollection<UserProgress> UserProgresses { get; set; }
     }
 }

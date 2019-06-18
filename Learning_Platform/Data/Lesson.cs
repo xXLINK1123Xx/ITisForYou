@@ -18,6 +18,7 @@ namespace Learning_Platform.Data
         public Lesson()
         {
             this.Questions = new HashSet<Question>();
+            this.UserProgresses = new HashSet<UserProgress>();
         }
     
         public int Id { get; set; }
@@ -28,5 +29,7 @@ namespace Learning_Platform.Data
         public virtual Course Course { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Question> Questions { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserProgress> UserProgresses { get; set; }
     }
 }

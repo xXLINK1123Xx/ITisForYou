@@ -12,13 +12,12 @@ namespace Learning_Platform.Data
     using System;
     using System.Collections.Generic;
     
-    public partial class UserCours
+    public partial class UserCourse
     {
         public int CourseId { get; set; }
         public string UserId { get; set; }
-        public Nullable<int> LastLesson { get; set; }
     
         public virtual AspNetUser User { get; set; }
-        public virtual Course Cours { get; set; }
+        public virtual Course Course { get; set; }
     }
 }

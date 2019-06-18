@@ -31,10 +31,10 @@ namespace Learning_Platform.Data
         public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
         public virtual DbSet<Course> Courses { get; set; }
-        public virtual DbSet<UserCours> UserCourses { get; set; }
+        public virtual DbSet<UserCourse> UserCourses1 { get; set; }
         public virtual DbSet<Answer> Answers { get; set; }
         public virtual DbSet<Question> Questions { get; set; }
-        public virtual DbSet<UserProgress> UserProgresses { get; set; }
         public virtual DbSet<UserAnswer> UserAnswers { get; set; }
+        public virtual DbSet<UserProgress> UserProgresses { get; set; }
     }
 }
