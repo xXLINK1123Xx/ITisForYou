@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="1e9f1344419b41c981deb44d0539e6e7" Name="Diagram1" >
+        <EntityTypeShape EntityType="LearningPlatformModel.Lesson" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="LearningPlatformModel.AspNetRole" Width="1.5" PointX="2.625" PointY="7.125" />
+        <EntityTypeShape EntityType="LearningPlatformModel.AspNetUserClaim" Width="1.5" PointX="7.125" PointY="8.375" />
+        <EntityTypeShape EntityType="LearningPlatformModel.AspNetUserLogin" Width="1.5" PointX="7.125" PointY="11.125" />
+        <EntityTypeShape EntityType="LearningPlatformModel.AspNetUser" Width="1.5" PointX="4.875" PointY="5.875" />
+        <EntityTypeShape EntityType="LearningPlatformModel.Course" Width="1.5" PointX="3.25" PointY="0.75" />
+        <EntityTypeShape EntityType="LearningPlatformModel.UserCours" Width="1.5" PointX="7.125" PointY="4.375" />
+        <AssociationConnector Association="LearningPlatformModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" />
+        <AssociationConnector Association="LearningPlatformModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" />
+        <AssociationConnector Association="LearningPlatformModel.FK__UserCours__UserI__59FA5E80" />
+        <AssociationConnector Association="LearningPlatformModel.FK__Lessons__CourseI__5AEE82B9" />
+        <AssociationConnector Association="LearningPlatformModel.FK__UserCours__Cours__59063A47" />
+        <AssociationConnector Association="LearningPlatformModel.AspNetUserRoles" />
+        <EntityTypeShape EntityType="LearningPlatformModel.Answer" Width="1.5" PointX="8.25" PointY="14" />
+        <EntityTypeShape EntityType="LearningPlatformModel.Question" Width="1.5" PointX="6" PointY="0.75" />
+        <EntityTypeShape EntityType="LearningPlatformModel.UserProgress" Width="1.5" PointX="9.125" PointY="1.625" />
+        <EntityTypeShape EntityType="LearningPlatformModel.UserAnswer" Width="1.5" PointX="10.5" PointY="7.375" />
+        <AssociationConnector Association="LearningPlatformModel.FK__Answer__Question__60A75C0F" />
+        <AssociationConnector Association="LearningPlatformModel.FK__Question__Currec__619B8048" />
+        <AssociationConnector Association="LearningPlatformModel.FK__UserQuest__Answe__656C112C" />
+        <AssociationConnector Association="LearningPlatformModel.FK__UserProgr__UserI__6754599E" />
+        <AssociationConnector Association="LearningPlatformModel.FK__UserQuest__UserI__6383C8BA" />
+        <AssociationConnector Association="LearningPlatformModel.FK__UserProgr__Cours__68487DD7" />
+        <AssociationConnector Association="LearningPlatformModel.FK__Question__Lesson__5DCAEF64" />
+        <AssociationConnector Association="LearningPlatformModel.FK__UserProgr__Lesso__693CA210" />
+        <AssociationConnector Association="LearningPlatformModel.FK__UserQuest__Quest__6477ECF3" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
