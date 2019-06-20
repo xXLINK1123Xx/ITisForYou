@@ -1,6 +1,11 @@
-﻿using System.Data.Entity;
+﻿using System.Collections.Generic;
+using System.Data.Entity;
+using System.Reflection;
 using System.Threading;
 using System.Web;
+using AutoMapper;
+using AutoMapper.Configuration;
+using Learning_Platform.Controllers;
 using Learning_Platform.Data;
 using Learning_Platform.Models;
 using Microsoft.AspNet.Identity;
@@ -35,6 +40,11 @@ namespace Learning_Platform
             
             container.Register<IAppBuilder>(()=> app, Lifestyle.Singleton);
 
+            
+            container.Register<MapperProvider>(()=> new MapperProvider(container), Lifestyle.Singleton);
+            container.Register(()=> GetMapper(container), Lifestyle.Singleton);
+
+
             container.Register<ApplicationDbContext>(()=> new ApplicationDbContext(), Lifestyle.Scoped);
 
             container.Register<IUserStore<ApplicationUser>>(
@@ -58,6 +68,12 @@ namespace Learning_Platform
             //container.Register(
             //    () => HttpContext.Current.GetOwinContext().Authentication);
             container.Register<LPDataContext>(() => new LPDataContext(), Lifestyle.Scoped);
+        }
+
+        private AutoMapper.IMapper GetMapper(Container container)
+        {
+            var mp = container.GetInstance<MapperProvider>();
+            return mp.GetMapper();
         }
 
         private static void InitializeUserManager(
@@ -95,6 +111,37 @@ namespace Learning_Platform
         {
             return container;
         }
+
+        public static IEnumerable<Assembly> GetMaps()
+        {
+            yield return typeof(CourseController.Mapping).Assembly;
+        }
+
+
+        public class MapperProvider
+        {
+            private readonly Container _container;
+
+            public MapperProvider(Container container)
+            {
+                _container = container;
+            }
+
+            public IMapper GetMapper()
+            {
+                var mce = new MapperConfigurationExpression();
+                mce.ConstructServicesUsing(_container.GetInstance);
+
+                mce.AddProfiles(GetMaps());
+
+                var mc = new MapperConfiguration(mce);
+                mc.AssertConfigurationIsValid();
+
+                IMapper m = new Mapper(mc, t => _container.GetInstance(t));
+
+                return m;
+            }
+        }
     }
 
     public interface IOwinContextAccessor
@@ -107,4 +154,5 @@ namespace Learning_Platform
         public static AsyncLocal<IOwinContext> OwinContext = new AsyncLocal<IOwinContext>();
         public IOwinContext CurrentContext => OwinContext.Value;
     }
+
 }

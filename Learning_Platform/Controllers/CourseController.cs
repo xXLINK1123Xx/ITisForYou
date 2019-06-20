@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
+using AutoMapper;
 using Learning_Platform.Data;
 
 namespace Learning_Platform.Controllers
@@ -13,17 +15,20 @@ namespace Learning_Platform.Controllers
     {
 
         private readonly LPDataContext context;
+        private readonly IMapper mapper;
 
-        public CourseController(LPDataContext context)
+        public CourseController(LPDataContext context, IMapper mapper)
         {
             this.context = context;
+            this.mapper = mapper;
         }
 
+        [Route("")]
         public async Task<IHttpActionResult> GetAll()
         {
             var result = await context.Courses.ToListAsync();
 
-            return Ok(result);
+            return Ok(mapper.Map<List<CourseDto>>(result.ToList()));
         }
 
         [HttpGet]
@@ -50,8 +55,22 @@ namespace Learning_Platform.Controllers
             {
                 return InternalServerError(new Exception("no course with such id found!"));
             }
+            
 
             return Ok(result.Lessons.ToList());
+        }
+
+        public class CourseDto
+        {
+            public int Id { get; set; }
+        }
+
+        public class Mapping : Profile
+        {
+            public Mapping()
+            {
+                CreateMap<Course, CourseDto>();
+            }
         }
     }
 }
