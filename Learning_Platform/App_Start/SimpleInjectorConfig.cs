@@ -43,7 +43,8 @@ namespace Learning_Platform
             
             container.Register<MapperProvider>(()=> new MapperProvider(container), Lifestyle.Singleton);
             container.Register(()=> GetMapper(container), Lifestyle.Singleton);
-
+            
+            container.Register<LPDataContext>(() => new LPDataContext(), Lifestyle.Scoped);
 
             container.Register<ApplicationDbContext>(()=> new ApplicationDbContext(), Lifestyle.Scoped);
 
@@ -67,7 +68,6 @@ namespace Learning_Platform
 
             //container.Register(
             //    () => HttpContext.Current.GetOwinContext().Authentication);
-            container.Register<LPDataContext>(() => new LPDataContext(), Lifestyle.Scoped);
         }
 
         private AutoMapper.IMapper GetMapper(Container container)

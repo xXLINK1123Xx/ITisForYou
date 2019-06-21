@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Learning_Platform.Data;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;

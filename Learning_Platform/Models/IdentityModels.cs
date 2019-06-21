@@ -21,7 +21,7 @@ namespace Learning_Platform.Models
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext()
-            : base("LPDataContext", throwIfV1Schema: false)
+            : base("LPUserDataContext", throwIfV1Schema: false)
         {
         }
         
