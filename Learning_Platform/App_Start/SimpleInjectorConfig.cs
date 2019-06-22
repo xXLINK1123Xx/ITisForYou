@@ -115,6 +115,7 @@ namespace Learning_Platform
         public static IEnumerable<Assembly> GetMaps()
         {
             yield return typeof(CourseController.Mapping).Assembly;
+            yield return typeof(LessonController.Mapping).Assembly;
         }
 
 
