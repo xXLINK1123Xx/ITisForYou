@@ -2,6 +2,7 @@
 using AutoMapper;
 using Learning_Platform.Controllers;
 using Learning_Platform.Data;
+using static Learning_Platform.Controllers.UserController;
 
 namespace Learning_Platform.Mapping
 {
@@ -20,6 +21,9 @@ namespace Learning_Platform.Mapping
 
 
             CreateMap<Course, CourseController.CourseDto>();
+
+            CreateMap<UserProfile, UserProfileDto>()
+            .ForMember(d=> d.Id, opt => opt.MapFrom(s=> s.UserId));
         }
     }
 }

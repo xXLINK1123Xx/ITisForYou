@@ -50,5 +50,6 @@ namespace Learning_Platform.Data
         public virtual ICollection<UserAnswer> UserAnswers { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserProgress> UserProgresses { get; set; }
+        public virtual UserProfile UserProfile { get; set; }
     }
 }

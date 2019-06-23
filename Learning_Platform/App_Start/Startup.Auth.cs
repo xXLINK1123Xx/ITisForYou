@@ -10,6 +10,7 @@ using Microsoft.Owin.Security.OAuth;
 using Owin;
 using Learning_Platform.Providers;
 using Learning_Platform.Models;
+using Microsoft.Owin.Cors;
 using SimpleInjector;
 
 namespace Learning_Platform
@@ -23,6 +24,8 @@ namespace Learning_Platform
         // For more information on configuring authentication, please visit https://go.microsoft.com/fwlink/?LinkId=301864
         public void ConfigureAuth(IAppBuilder app, Container container)
         {
+
+            app.UseCors(CorsOptions.AllowAll);
             // Configure the db context and user manager to use a single instance per request
             app.CreatePerOwinContext(container.GetInstance<ApplicationUserManager>);
             //app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);

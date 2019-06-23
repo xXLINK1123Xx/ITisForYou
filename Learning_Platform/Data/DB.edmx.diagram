@@ -31,6 +31,8 @@
         <AssociationConnector Association="LearningPlatformModel.FK__Questions__Lesso__6C190EBB" />
         <AssociationConnector Association="LearningPlatformModel.FK__UserProgr__Lesso__7F2BE32F" />
         <AssociationConnector Association="LearningPlatformModel.FK__UserAnswe__Quest__7A672E12" />
+        <EntityTypeShape EntityType="LearningPlatformModel.UserProfile" Width="1.5" PointX="7.125" PointY="17" />
+        <AssociationConnector Association="LearningPlatformModel.FK__UserProfi__UserI__02FC7413" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

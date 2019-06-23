@@ -108,6 +108,17 @@
           <Property Name="CourseId" Type="int" Nullable="false" />
           <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
         </EntityType>
+        <EntityType Name="UserProfile">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="128" />
+          <Property Name="Surname" Type="nvarchar" MaxLength="128" />
+          <Property Name="Age" Type="int" />
+          <Property Name="Gender" Type="tinyint" />
+          <Property Name="ProfileImageUrl" Type="nvarchar(max)" />
+        </EntityType>
         <EntityType Name="UserProgress">
           <Key>
             <PropertyRef Name="UserId" />
@@ -225,6 +236,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__UserProfi__UserI__02FC7413">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="UserProfile" Type="Self.UserProfile" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserProfile">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__UserProgr__Cours__00200768">
           <End Role="Courses" Type="Self.Courses" Multiplicity="1" />
           <End Role="UserProgress" Type="Self.UserProgress" Multiplicity="*" />
@@ -329,6 +352,7 @@
           <EntitySet Name="Questions" EntityType="Self.Questions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserAnswers" EntityType="Self.UserAnswers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserCourses" EntityType="Self.UserCourses" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserProfile" EntityType="Self.UserProfile" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserProgress" EntityType="Self.UserProgress" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK__Answers__Questio__73BA3083" Association="Self.FK__Answers__Questio__73BA3083">
             <End Role="Questions" EntitySet="Questions" />
@@ -365,6 +389,10 @@
           <AssociationSet Name="FK__UserCours__UserI__6FE99F9F" Association="Self.FK__UserCours__UserI__6FE99F9F">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="UserCourses" EntitySet="UserCourses" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserProfi__UserI__02FC7413" Association="Self.FK__UserProfi__UserI__02FC7413">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="UserProfile" EntitySet="UserProfile" />
           </AssociationSet>
           <AssociationSet Name="FK__UserProgr__Cours__00200768" Association="Self.FK__UserProgr__Cours__00200768">
             <End Role="Courses" EntitySet="Courses" />
@@ -471,6 +499,11 @@
             <End Role="Question" EntitySet="Questions" />
             <End Role="UserAnswer" EntitySet="UserAnswers" />
           </AssociationSet>
+          <EntitySet Name="UserProfiles" EntityType="LearningPlatformModel.UserProfile" />
+          <AssociationSet Name="FK__UserProfi__UserI__02FC7413" Association="LearningPlatformModel.FK__UserProfi__UserI__02FC7413">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="UserProfile" EntitySet="UserProfiles" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Lesson">
           <Key>
@@ -535,6 +568,7 @@
           <NavigationProperty Name="AspNetRoles" Relationship="LearningPlatformModel.AspNetUserRoles" FromRole="AspNetUser" ToRole="AspNetRole" />
           <NavigationProperty Name="UserAnswers" Relationship="LearningPlatformModel.FK__UserAnswe__UserI__797309D9" FromRole="AspNetUser" ToRole="UserAnswer" />
           <NavigationProperty Name="UserProgresses" Relationship="LearningPlatformModel.FK__UserProgr__UserI__7E37BEF6" FromRole="AspNetUser" ToRole="UserProgress" />
+          <NavigationProperty Name="UserProfile" Relationship="LearningPlatformModel.FK__UserProfi__UserI__02FC7413" FromRole="AspNetUser" ToRole="UserProfile" />
         </EntityType>
         <EntityType Name="Course">
           <Key>
@@ -780,6 +814,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="UserProfile">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Surname" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Age" Type="Int32" />
+          <Property Name="Gender" Type="Byte" />
+          <Property Name="ProfileImageUrl" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AspNetUser" Relationship="LearningPlatformModel.FK__UserProfi__UserI__02FC7413" FromRole="UserProfile" ToRole="AspNetUser" />
+        </EntityType>
+        <Association Name="FK__UserProfi__UserI__02FC7413">
+          <End Type="LearningPlatformModel.AspNetUser" Role="AspNetUser" Multiplicity="1" />
+          <End Type="LearningPlatformModel.UserProfile" Role="UserProfile" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserProfile">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -900,6 +958,18 @@
               <MappingFragment StoreEntitySet="UserProgress">
                 <ScalarProperty Name="CourseId" ColumnName="CourseId" />
                 <ScalarProperty Name="LessonId" ColumnName="LessonId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserProfiles">
+            <EntityTypeMapping TypeName="LearningPlatformModel.UserProfile">
+              <MappingFragment StoreEntitySet="UserProfile">
+                <ScalarProperty Name="ProfileImageUrl" ColumnName="ProfileImageUrl" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="Age" ColumnName="Age" />
+                <ScalarProperty Name="Surname" ColumnName="Surname" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
               </MappingFragment>
             </EntityTypeMapping>

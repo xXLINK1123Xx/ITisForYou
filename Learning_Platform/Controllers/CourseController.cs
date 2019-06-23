@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using AutoMapper;
 using Learning_Platform.Data;
+using Microsoft.AspNet.Identity;
 
 namespace Learning_Platform.Controllers
 {
@@ -61,6 +62,31 @@ namespace Learning_Platform.Controllers
             var lessons = mapper.Map<List<LessonController.LessonDto>>(result.Lessons.ToList());
 
             return Ok(lessons);
+        }
+
+        [Authorize]
+        [HttpGet]
+        [Route("{id}/enroll")]
+        public async Task<IHttpActionResult> EnrollUserToCourse(int id)
+        {
+            var result = await context.Courses.FirstOrDefaultAsync(c => c.Id == id);
+
+            if (result == null)
+            {
+                return InternalServerError(new Exception("no course with such id found!"));
+            }
+
+            var userCourse = new UserCourse
+            {
+                CourseId = id,
+                UserId = User.Identity.GetUserId()
+            };
+
+            result.UserCourses.Add(userCourse);
+
+            await context.SaveChangesAsync();
+
+            return Ok();
         }
 
         public class CourseDto

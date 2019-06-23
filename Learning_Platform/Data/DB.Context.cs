@@ -36,5 +36,6 @@ namespace Learning_Platform.Data
         public virtual DbSet<Question> Questions { get; set; }
         public virtual DbSet<UserAnswer> UserAnswers { get; set; }
         public virtual DbSet<UserProgress> UserProgresses { get; set; }
+        public virtual DbSet<UserProfile> UserProfiles { get; set; }
     }
 }
