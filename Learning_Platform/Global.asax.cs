@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
@@ -26,6 +27,9 @@ namespace Learning_Platform
             config.Formatters.JsonFormatter
                 .SerializerSettings
                 .ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            EnableCorsAttribute cors = new EnableCorsAttribute("*", "*", "GET,POST");
+
+            config.EnableCors(cors);
             //BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
     }
