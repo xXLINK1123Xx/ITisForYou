@@ -90,6 +90,7 @@
           <Property Name="LessonId" Type="int" Nullable="false" />
           <Property Name="Title" Type="nvarchar" MaxLength="1024" Nullable="false" />
           <Property Name="CorrectAnswer" Type="int" />
+          <Property Name="Type" Type="nvarchar" MaxLength="12" />
         </EntityType>
         <EntityType Name="UserAnswers">
           <Key>
@@ -681,6 +682,7 @@
           <NavigationProperty Name="CorrectAnswer" Relationship="LearningPlatformModel.FK__Questions__Corre__74AE54BC" FromRole="Question" ToRole="Answer" />
           <NavigationProperty Name="Lesson" Relationship="LearningPlatformModel.FK__Questions__Lesso__6C190EBB" FromRole="Question" ToRole="Lesson" />
           <NavigationProperty Name="UserAnswers" Relationship="LearningPlatformModel.FK__UserAnswe__Quest__7A672E12" FromRole="Question" ToRole="UserAnswer" />
+          <Property Name="Type" Type="String" MaxLength="12" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="UserAnswer">
           <Key>
@@ -937,6 +939,7 @@
           <EntitySetMapping Name="Questions">
             <EntityTypeMapping TypeName="LearningPlatformModel.Question">
               <MappingFragment StoreEntitySet="Questions">
+                <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="CorrectAnswerId" ColumnName="CorrectAnswer" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="LessonId" ColumnName="LessonId" />
