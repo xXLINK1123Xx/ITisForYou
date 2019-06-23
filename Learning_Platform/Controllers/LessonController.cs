@@ -12,10 +12,12 @@ namespace Learning_Platform.Controllers
     public class LessonController : ApiController
     {
         private readonly LPDataContext context;
+        private readonly IMapper mapper;
 
-        public LessonController(LPDataContext context)
+        public LessonController(LPDataContext context, IMapper mapper)
         {
             this.context = context;
+            this.mapper = mapper;
         }
 
         [Route("{id}")]
@@ -28,7 +30,9 @@ namespace Learning_Platform.Controllers
             {
                 return NotFound();
             }
-            return Ok(result);
+
+            var lesson = mapper.Map<Lesson, LessonDto>(result);
+            return Ok(lesson);
         }
 
         [Route("{id}/tasks")]
@@ -41,7 +45,8 @@ namespace Learning_Platform.Controllers
             }
 
             var tasks = result.Questions.ToList();
-            return Ok(tasks);
+            var mappedTasks = mapper.Map<List<Question>, List<QuestionDto>>(tasks);
+            return Ok(mappedTasks);
         }
 
         public class LessonDto

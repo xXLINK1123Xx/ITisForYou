@@ -7,6 +7,7 @@ using AutoMapper;
 using AutoMapper.Configuration;
 using Learning_Platform.Controllers;
 using Learning_Platform.Data;
+using Learning_Platform.Mapping;
 using Learning_Platform.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
@@ -114,8 +115,8 @@ namespace Learning_Platform
 
         public static IEnumerable<Assembly> GetMaps()
         {
-            yield return typeof(CourseController.Mapping).Assembly;
-            yield return typeof(LessonController.Mapping).Assembly;
+            yield return typeof(MappingProfiles).Assembly;
+            //yield return typeof(LessonController.Mapping).Assembly;
         }
 
 
@@ -132,7 +133,7 @@ namespace Learning_Platform
             {
                 var mce = new MapperConfigurationExpression();
                 mce.ConstructServicesUsing(_container.GetInstance);
-
+                mce.Advanced.AllowAdditiveTypeMapCreation = true;
                 mce.AddProfiles(GetMaps());
 
                 var mc = new MapperConfiguration(mce);

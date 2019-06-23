@@ -42,7 +42,9 @@ namespace Learning_Platform.Controllers
                 return InternalServerError(new Exception("no course with such id found!"));
             }
 
-            return Ok(result);
+            var course = mapper.Map<Course, CourseDto>(result);
+
+            return Ok(course);
         }
 
         [HttpGet]
@@ -55,9 +57,10 @@ namespace Learning_Platform.Controllers
             {
                 return InternalServerError(new Exception("no course with such id found!"));
             }
-            
 
-            return Ok(result.Lessons.ToList());
+            var lessons = mapper.Map<List<LessonController.LessonDto>>(result.Lessons.ToList());
+
+            return Ok(lessons);
         }
 
         public class CourseDto
